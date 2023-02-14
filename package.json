@@ -1,0 +1,18 @@
+{
+  "name": "grpc-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dynamic_codegen/server.js",
+  "scripts": {
+    "start": "node dynamic_codegen/server.js",
+    "client": "node dynamic_codegen/client.js"
+  },
+  "keywords": [],
+  "author": "adrian.lin.1.0.0@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.8",
+    "@grpc/proto-loader": "^0.7.5",
+    "google-protobuf": "^3.21.2"
+  }
+}

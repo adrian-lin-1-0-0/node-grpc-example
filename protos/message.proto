@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package message;
+
+service Transporter {
+    rpc SendMessage (Request) returns (Reply) {}
+  }
+  
+  message Request {
+    string messageID  = 1;
+    bytes data = 2;
+  }
+  
+  message Reply {
+    string messageID  = 1;
+    bytes data = 2;
+  }
+  
