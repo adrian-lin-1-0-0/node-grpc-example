@@ -1,29 +1,24 @@
-var PROTO_PATH = __dirname + '/../protos/message.proto';
-var grpc = require('@grpc/grpc-js');
-var protoLoader = require('@grpc/proto-loader');
-var packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true
-    });
-var message_proto = grpc.loadPackageDefinition(packageDefinition).message;
+const {
+    MESSAGE_ID,
+    REQUEST_DATA,
+    GRPC_ADDR
+} = require('../config');
+const grpc = require('@grpc/grpc-js');
+const { packageDefinitionFactory } = require('./utils');
+
+const message_proto = grpc.loadPackageDefinition(packageDefinitionFactory()).message;
 
 function main() {
-    var target = 'localhost:50051';
-    var client = new message_proto.Transporter(
-        target,
+    const client = new message_proto.Transporter(
+        GRPC_ADDR,
         grpc.credentials.createInsecure());
 
-    client.SendMessage({
-        messageID: "this is transID",
-        data: Buffer.from("this is data")
+    client.sendMessage({
+        message_id: MESSAGE_ID,
+        data: Buffer.from(REQUEST_DATA)
     }, function (err, response) {
         if (!err) {
-            console.log('reply:', (response?.data)?.toString());
+            console.log(`[recive] message_id : ${response.message_id}, data : ${(response?.data)?.toString()}`);
         } else {
             console.log('error:', err);
         }

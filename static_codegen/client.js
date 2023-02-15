@@ -1,20 +1,23 @@
-var messages = require('./message_pb');
-var services = require('./message_grpc_pb');
-var grpc = require('@grpc/grpc-js');
+const grpc = require('@grpc/grpc-js');
+const {
+    GRPC_ADDR,
+    MESSAGE_ID,
+    REQUEST_DATA
+} = require('../config');
+const messages = require('./message_pb');
+const services = require('./message_grpc_pb');
 
 function main() {
-    var target = 'localhost:50051';
     var client = new services.TransporterClient(
-        target,
+        GRPC_ADDR,
         grpc.credentials.createInsecure());
 
-
     var request = new messages.Request();
-    request.setMessageid("this is messageID");
-    request.setData(Buffer.from("this is data"));
+    request.setMessageId(MESSAGE_ID);
+    request.setData(Buffer.from(REQUEST_DATA));
     client.sendMessage(request, function (err, response) {
         if (!err) {
-            console.log('reply:', (new TextDecoder().decode(response?.getData())));
+            console.log(`[recive] message_id : ${response.getMessageId()} data : ${(new TextDecoder().decode(response?.getData()))}`);
         } else {
             console.log('error:', err);
         }

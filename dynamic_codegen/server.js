@@ -1,25 +1,21 @@
-var PROTO_PATH = __dirname + '/../protos/message.proto';
-var grpc = require('@grpc/grpc-js');
-var protoLoader = require('@grpc/proto-loader');
-var packageDefinition = protoLoader.loadSync(
-  PROTO_PATH,
-  {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true
-  });
-var message_proto = grpc.loadPackageDefinition(packageDefinition).message;
+const {
+  REPLY_DATA,
+  GRPC_ADDR
+} = require('../config');
+const grpc = require('@grpc/grpc-js');
+const { packageDefinitionFactory } = require('./utils');
+
+const message_proto = grpc.loadPackageDefinition(packageDefinitionFactory()).message;
 
 function ReplyFunc(call, callback) {
-  callback(null, { messageID: call.request.messageID, data: Buffer.from("hello,this is server") });
+  console.log(`message_id: ${call.request.message_id}, data: ${call.request.data}`);
+  callback(null, { message_id: call.request.message_id, data: Buffer.from(REPLY_DATA) });
 }
 
 function main() {
   var server = new grpc.Server();
-  server.addService(message_proto.Transporter.service, { SendMessage: ReplyFunc });
-  server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+  server.addService(message_proto.Transporter.service, { sendMessage: ReplyFunc });
+  server.bindAsync(GRPC_ADDR, grpc.ServerCredentials.createInsecure(), () => {
     server.start();
   });
 }

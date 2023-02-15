@@ -1,18 +1,24 @@
-var messages = require('./message_pb');
-var services = require('./message_grpc_pb');
-var grpc = require('@grpc/grpc-js');
+const grpc = require('@grpc/grpc-js');
+const {
+    GRPC_ADDR,
+    REPLY_DATA
+} = require('../config');
+const messages = require('./message_pb');
+const services = require('./message_grpc_pb');
+
 
 function ReplyFunc(call, callback) {
     var reply = new messages.Reply();
-    reply.setMessageid(call.request.getMessageid());
-    reply.setData(Buffer.from("hello,this is server"));
+    console.log(`message_id: ${call.request.getMessageId()}, data: ${(new TextDecoder().decode(call.request.getData()))}`);
+    reply.setMessageId(call.request.getMessageId());
+    reply.setData(Buffer.from(REPLY_DATA));
     callback(null, reply);
 }
 
 function main() {
     var server = new grpc.Server();
     server.addService(services.TransporterService, { sendMessage: ReplyFunc });
-    server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+    server.bindAsync(GRPC_ADDR, grpc.ServerCredentials.createInsecure(), () => {
         server.start();
     });
 }

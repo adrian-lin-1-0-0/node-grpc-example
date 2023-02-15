@@ -29,7 +29,7 @@ function deserialize_message_Request(buffer_arg) {
 
 var TransporterService = exports.TransporterService = {
   sendMessage: {
-    path: '/message.Transporter/SendMessage',
+    path: '/message.Transporter/sendMessage',
     requestStream: false,
     responseStream: false,
     requestType: message_pb.Request,

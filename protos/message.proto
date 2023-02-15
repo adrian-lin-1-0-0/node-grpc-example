@@ -3,16 +3,16 @@ syntax = "proto3";
 package message;
 
 service Transporter {
-    rpc SendMessage (Request) returns (Reply) {}
+    rpc sendMessage (Request) returns (Reply) {}
   }
   
   message Request {
-    string messageID  = 1;
+    string message_id  = 1;
     bytes data = 2;
   }
   
   message Reply {
-    string messageID  = 1;
+    string message_id  = 1;
     bytes data = 2;
   }
   
